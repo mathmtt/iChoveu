@@ -119,13 +119,13 @@ export async function handleSearch(event) {
     searchCities(searchValue);
     // seu código aqui
     const lista = await searchCities(searchValue);
-    const arrayC = lista.map((cidades) => getWeatherByCity(cidades.url));
+    const arrayC = lista.map((city) => getWeatherByCity(city.url));
     const resolvePromise = await Promise.all(arrayC);
     resolvePromise.forEach((obj) => {
       const li = createCityElement(obj);
       document.getElementById('cities').appendChild(li);
     });
   } catch (error) {
-    window.alert('Dado não recebido', error);
+    window.alert(error.message);
   }
 }
