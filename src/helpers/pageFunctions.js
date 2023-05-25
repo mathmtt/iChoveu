@@ -1,4 +1,5 @@
 import { searchCities, getWeatherByCity } from './weatherAPI';
+const TOKEN = import.meta.env.VITE_TOKEN;
 
 /**
  * Cria um elemento HTML com as informações passadas
@@ -77,7 +78,7 @@ export function showForecast(forecastList) {
  * Recebe um objeto com as informações de uma cidade e retorna um elemento HTML
  */
 export function createCityElement(cityInfo) {
-  const { name, country, temp, condition, icon /* , url */ } = cityInfo;
+  const { name, country, temp, condition, icon, url } = cityInfo;
 
   const cityElement = createElement('li', 'city');
 
@@ -104,6 +105,23 @@ export function createCityElement(cityInfo) {
   cityElement.appendChild(headingElement);
   cityElement.appendChild(infoContainer);
 
+  const btnElement = createElement('button', 'city-forecast-button', 'Ver previsão');
+  btnElement.addEventListener(('click'), async () => {
+    const resposta = await fetch(`http://api.weatherapi.com/v1/forecast.json?lang=pt&key=${TOKEN}&q=${url}&days=7`);
+    const data = await resposta.json();
+    const arrayNx = data.forecast.forecastday
+      .map((day) => ({
+        icon: day.day.condition.icon,
+        date: day.date,
+        minTemp: day.day.mintemp_c,
+        condition: day.day.condition.text,
+        maxTemp: day.day.maxtemp_c,
+      }));
+
+    showForecast(arrayNx);
+  });
+  cityElement.appendChild(btnElement);
+
   return cityElement;
 }
 
@@ -126,6 +144,6 @@ export async function handleSearch(event) {
       document.getElementById('cities').appendChild(li);
     });
   } catch (error) {
-    window.alert(error.message);
+    window.alert('Dados não encontrados', error);
   }
 }
