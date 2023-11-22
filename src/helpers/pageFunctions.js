@@ -114,8 +114,8 @@ export function createCityElement(cityInfo) {
       .map((day) => ({
         icon: day.day.condition.icon,
         date: day.date,
-        minTemp: day.day.mintemp_c,
         condition: day.day.condition.text,
+        minTemp: day.day.mintemp_c,
         maxTemp: day.day.maxtemp_c,
       }));
 
